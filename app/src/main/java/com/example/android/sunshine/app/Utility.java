@@ -17,6 +17,8 @@ package com.example.android.sunshine.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 
@@ -25,6 +27,25 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utility {
+
+    /**
+     * Checks to ensure the user can connect to the network,
+     * as per Google's Android Developer guidelines. Returns true
+     * if the network is "good to go!"
+     */
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        //This method requires permission ACCESS_NETWORK_STATE
+        boolean isAvailable = false;
+        if (networkInfo != null && networkInfo.isConnected()) {
+            //Checks if a network is present and connected
+            isAvailable = true;
+        }
+        return isAvailable;
+    }
+
     public static String getPreferredLocation(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_location_key),
