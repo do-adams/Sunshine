@@ -16,6 +16,6 @@
  -->
 <resources>
     <declare-styleable name="LocationEditTextPreference">
-        <attr name="minLength" format="integer"/>
+        <attr name="minLength" format="integer" />
     </declare-styleable>
 </resources>
