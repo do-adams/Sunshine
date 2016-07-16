@@ -16,6 +16,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "GOOGLE_PLACES_API_KEY", MyGooglePlacesApiKey
+        }
+
+        debug {
+            resValue "string", "GOOGLE_PLACES_API_KEY", MyGooglePlacesApiKey
         }
     }
     buildTypes.each {

@@ -45,6 +45,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
+
+        <!--API Key for the Google Places API-->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/GOOGLE_PLACES_API_KEY"/>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
