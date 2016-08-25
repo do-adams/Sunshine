@@ -129,7 +129,7 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
             mTextPaint = createTextPaint(resources.getColor(R.color.digital_text));
 
             mDateTextPaint = new Paint();
-            mDateTextPaint = createTextPaint(resources.getColor(R.color.digital_text));
+            mDateTextPaint = createTextPaint(resources.getColor(R.color.date_text));
 
             mTime = new Time();
         }
@@ -267,8 +267,9 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
 
             // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
             mTime.setToNow();
-            // Converting from 24-hour time.
+            // Converts from 24-hour time.
             int hour = (mTime.hour > 12) ? mTime.hour - 12 : mTime.hour;
+
             String text = mAmbient
                     ? String.format("%d:%02d", hour, mTime.minute)
                     : String.format("%d:%02d:%02d", hour, mTime.minute, mTime.second);
