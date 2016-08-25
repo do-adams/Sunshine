@@ -267,9 +267,11 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
 
             // Draw H:MM in ambient mode or H:MM:SS in interactive mode.
             mTime.setToNow();
+            // Converting from 24-hour time.
+            int hour = (mTime.hour > 12) ? mTime.hour - 12 : mTime.hour;
             String text = mAmbient
-                    ? String.format("%d:%02d", mTime.hour, mTime.minute)
-                    : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
+                    ? String.format("%d:%02d", hour, mTime.minute)
+                    : String.format("%d:%02d:%02d", hour, mTime.minute, mTime.second);
             canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
 
             String date = (mTime.month + 1) + "/" + mTime.monthDay + "/" + mTime.year;
