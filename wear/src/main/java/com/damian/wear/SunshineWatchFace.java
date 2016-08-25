@@ -21,11 +21,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -98,8 +101,6 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                 mTime.setToNow();
             }
         };
-        int mTapCount;
-
         float mXOffset;
         float mYOffset;
 
@@ -117,7 +118,7 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                     .setCardPeekMode(WatchFaceStyle.PEEK_MODE_VARIABLE)
                     .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
                     .setShowSystemUiTime(false)
-                    .setAcceptsTapEvents(true)
+                    .setAcceptsTapEvents(false)
                     .build());
             Resources resources = SunshineWatchFace.this.getResources();
             mYOffset = resources.getDimension(R.dimen.digital_y_offset);
@@ -232,30 +233,6 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
             updateTimer();
         }
 
-        /**
-         * Captures tap event (and tap type) and toggles the background color if the user finishes
-         * a tap.
-         */
-        @Override
-        public void onTapCommand(int tapType, int x, int y, long eventTime) {
-            Resources resources = SunshineWatchFace.this.getResources();
-            switch (tapType) {
-                case TAP_TYPE_TOUCH:
-                    // The user has started touching the screen.
-                    break;
-                case TAP_TYPE_TOUCH_CANCEL:
-                    // The user has started a different gesture or otherwise cancelled the tap.
-                    break;
-                case TAP_TYPE_TAP:
-                    // The user has completed the tap gesture.
-                    mTapCount++;
-                    mBackgroundPaint.setColor(resources.getColor(mTapCount % 2 == 0 ?
-                            R.color.background : R.color.background2));
-                    break;
-            }
-            invalidate();
-        }
-
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             // Draw the background.
@@ -275,8 +252,14 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                     : String.format("%d:%02d:%02d", hour, mTime.minute, mTime.second);
             canvas.drawText(text, mXOffset, mYOffset, mTextPaint);
 
-            String date = (mTime.month + 1) + "/" + mTime.monthDay + "/" + mTime.year;
-            canvas.drawText(date, mXOffset * 3, mYOffset + mXOffset, mDateTextPaint);
+            if (!isInAmbientMode()) {
+                String date = (mTime.month + 1) + "/" + mTime.monthDay + "/" + mTime.year;
+                canvas.drawText(date, mXOffset * 3, mYOffset + mXOffset, mDateTextPaint);
+
+                Drawable drawable = getResources().getDrawable(R.mipmap.ic_clear);
+                Bitmap iconBitmap = ((BitmapDrawable) drawable).getBitmap();
+                canvas.drawBitmap(iconBitmap, mXOffset * 3/2, mYOffset + (mYOffset * 1/2), null);
+            }
         }
 
         /**
