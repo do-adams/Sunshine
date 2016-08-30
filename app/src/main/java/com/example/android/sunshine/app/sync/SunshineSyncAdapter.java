@@ -68,10 +68,21 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             "com.example.android.sunshine.app.ACTION_DATA_UPDATED";
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
-    public static final int SYNC_INTERVAL = 60;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/2;
+    public static int SYNC_INTERVAL = 60 * 180;
+    public static int SYNC_FLEXTIME = SYNC_INTERVAL/3;
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
     private static final int WEATHER_NOTIFICATION_ID = 3004;
+
+    // If debug mode is on, allows for very timely weather forecast updates
+    // for easy debugging with Android Wear.
+    // Set to false if not debugging the Android Wear module.
+    private static final boolean IS_WEAR_DEBUG_MODE = true;
+    static {
+        if (IS_WEAR_DEBUG_MODE) {
+            SYNC_INTERVAL = 60;
+            SYNC_FLEXTIME = SYNC_INTERVAL/2;
+        }
+    }
 
 
     private static final String[] NOTIFY_WEATHER_PROJECTION = new String[] {
@@ -423,8 +434,15 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
             long lastSync = prefs.getLong(lastNotificationKey, 0);
 
-            // System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS
-            if (true) {
+            boolean isTimeForSync;
+
+            if (IS_WEAR_DEBUG_MODE) {
+                isTimeForSync = true;
+            } else {
+                isTimeForSync = System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS; // normal time interval for weather notifications
+            }
+
+            if (isTimeForSync) {
                 // Last sync was more than 1 day ago, let's send a notification with the weather.
                 String locationQuery = Utility.getPreferredLocation(context);
 
