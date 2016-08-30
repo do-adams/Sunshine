@@ -6,6 +6,7 @@ Weather data for Android and Android Wear.
 Sunshine is a weather app for the Android platform designed to highlight multiple concepts of application development that I covered during the Udacity Android Developer Nanodegree program. Most notably, its feature set of Android Wear functionality is precisely what makes this app an interesting project. Besides fetching timely weather information and notifications in the background, Sunshine comes with a unique watch face that users can enjoy on both round and square Android Wear devices in order to keep them informed of the daily weather well ahead of time. 
 
 The concepts that led me to developing the watch face portion of the app during late August 2016 are covered in Udacity's [Android Wear Development](https://www.udacity.com/course/android-wear-development--ud875A) course. When focusing on this part of the Android platform, I made sure that I:
+- Built and designed an attractive custom Android Wear watch face.
 - Implemented Android's Data Layer API to transfer data between the handheld and Wear devices.
 - Programmatically drew UI elements on the Android Wear watchface that aligned properly across different screen shapes.
 - Made efficient UI design tradeoffs between interactive and ambient modes on the Wear device.
