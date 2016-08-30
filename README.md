@@ -11,7 +11,7 @@ The concepts that led me to developing the watch face portion of the app during 
 - Made efficient UI design tradeoffs between interactive and ambient modes on the Wear device.
 
 #Getting Started
----------------
+
 Before you begin with Sunshine you will first need a few things: 
 - An [Open Weather Map API](http://openweathermap.org/api) key in your local or global gradle.properties file.
 - A [Google Places API](https://developers.google.com/places/android-api/signup) key in your local or global gradle.properties file along with a `google-services.json` configuration file in your `/app` dir.
