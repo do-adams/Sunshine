@@ -1,5 +1,7 @@
-Advanced Android Sample App
+#Sunshine
 ===================================
+
+![Sunshine Preview Img](Sunshine Watch Faces Preview.png?raw=true)
 
 Synchronizes weather information from OpenWeatherMap on Android Phones and Tablets. Used in the Udacity Advanced Android course.
 
