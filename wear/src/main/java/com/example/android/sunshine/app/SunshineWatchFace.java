@@ -1,17 +1,5 @@
 /*
- * Copyright (C) 2014 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (C) 2016 Damián Adams and Android Open Source Project
  */
 
 package com.example.android.sunshine.app;
@@ -55,8 +43,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Digital watch face with seconds. In ambient mode, the seconds aren't displayed. On devices with
- * low-bit ambient mode, the text is drawn without anti-aliasing in ambient mode.
+ * Digital watch face for Android Wear. Does not display seconds in ambient mode.
  */
 public class SunshineWatchFace extends CanvasWatchFaceService {
     private static final String TAG = SunshineWatchFace.class.getSimpleName();
@@ -292,7 +279,7 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                 if (mHasTemperatureData) {
                     int iconId = getIconResourceForWeatherCondition(mWeatherId);
 
-                    if (iconId != -1) {
+                    if (iconId != -1) { // if the icon id is a valid resource id
                         Drawable drawable = getResources().getDrawable(iconId);
                         Bitmap iconBitmap = ((BitmapDrawable) drawable).getBitmap();
                         canvas.drawBitmap(iconBitmap, mXOffset * 3/2, mYOffset + (mYOffset * 1/2), null);
@@ -314,6 +301,9 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
             }
         }
 
+        /**
+         * Retrieves a resource id for a weather icon based on the weather id provided.
+         */
         public int getIconResourceForWeatherCondition(int weatherId) {
             // Based on weather code data found at:
             // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes

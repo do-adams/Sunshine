@@ -540,6 +540,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
+    /**
+     * Sends weather information (consisting of the peak high and low temperatures of the day and
+     * the weather icon id) to an Android Wear device using the Wearable Data Layer API.
+     * The information is intended to be synchronized with the Android device's notifications.
+     */
     private void sendWeatherInfoToWearable(final String high, final String low, final int weatherId) {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
