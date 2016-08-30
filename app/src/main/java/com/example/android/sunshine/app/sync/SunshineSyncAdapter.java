@@ -437,8 +437,11 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                     int weatherId = cursor.getInt(INDEX_WEATHER_ID);
                     double high = cursor.getDouble(INDEX_MAX_TEMP);
                     double low = cursor.getDouble(INDEX_MIN_TEMP);
-                    sendHighLowToWearable(high, low);
                     String desc = cursor.getString(INDEX_SHORT_DESC);
+
+                    // Sends weather information to the Wearable
+                    sendWeatherInfoToWearable(Utility.formatTemperature(context, high),
+                            Utility.formatTemperature(context, low), weatherId);
 
                     int iconId = Utility.getIconResourceForWeatherCondition(weatherId);
                     Resources resources = context.getResources();
@@ -519,7 +522,7 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void sendHighLowToWearable(final double high, final double low) {
+    private void sendWeatherInfoToWearable(final String high, final String low, final int weatherId) {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
@@ -527,9 +530,10 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
                         Log.d(LOG_TAG, "onConnected: " + connectionHint);
                         // Now you can use the Data Layer API
                         PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/weather");
-                        putDataMapReq.getDataMap().putDouble("high", high);
-                        putDataMapReq.getDataMap().putDouble("low", low);
-                        putDataMapReq.getDataMap().putLong("time", new Date().getTime()); // Inserts a Timestamp
+                        putDataMapReq.getDataMap().putString("high", high);
+                        putDataMapReq.getDataMap().putString("low", low);
+                        putDataMapReq.getDataMap().putInt("id", weatherId);
+                        putDataMapReq.getDataMap().putLong("time", new Date().getTime()); // Inserts a timestamp to trigger onDataChanged
                         PutDataRequest putDataReq = putDataMapReq.asPutDataRequest();
                         putDataReq.setUrgent();
                         PendingResult<DataApi.DataItemResult> pendingResult =

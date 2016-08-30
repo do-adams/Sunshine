@@ -124,9 +124,14 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
          */
         boolean mLowBitAmbient;
 
+        boolean mIsRound;
+
         private GoogleApiClient mGoogleApiClient;
-        private double mHighTemp = 100;
-        private double mLowTemp = 0;
+
+        private String mHighTemp;
+        private String mLowTemp;
+        private int mWeatherId;
+
         private boolean mHasTemperatureData;
 
         @Override
@@ -218,13 +223,13 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
 
             // Load resources that have alternate values for round watches.
             Resources resources = SunshineWatchFace.this.getResources();
-            boolean isRound = insets.isRound();
-            mXOffset = resources.getDimension(isRound
+            mIsRound = insets.isRound();
+            mXOffset = resources.getDimension(mIsRound
                     ? com.example.android.sunshine.app.R.dimen.digital_x_offset_round : com.example.android.sunshine.app.R.dimen.digital_x_offset);
 
-            float textSize = resources.getDimension(isRound
+            float textSize = resources.getDimension(mIsRound
                     ? com.example.android.sunshine.app.R.dimen.digital_text_size_round : com.example.android.sunshine.app.R.dimen.digital_text_size);
-            float dateTextSize = resources.getDimension(isRound
+            float dateTextSize = resources.getDimension(mIsRound
                     ? com.example.android.sunshine.app.R.dimen.digital_date_text_size_round : com.example.android.sunshine.app.R.dimen.digital_date_text_size);
 
             mTextPaint.setTextSize(textSize);
@@ -284,17 +289,60 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                 String date = (mTime.month + 1) + "/" + mTime.monthDay + "/" + mTime.year;
                 canvas.drawText(date, mXOffset * 3, mYOffset + mXOffset, mDateTextPaint);
 
-                mHasTemperatureData = true;
                 if (mHasTemperatureData) {
-                    Drawable drawable = getResources().getDrawable(com.example.android.sunshine.app.R.mipmap.ic_clear);
-                    Bitmap iconBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    canvas.drawBitmap(iconBitmap, mXOffset * 3/2, mYOffset + (mYOffset * 1/2), null);
+                    int iconId = getIconResourceForWeatherCondition(mWeatherId);
 
-                    canvas.drawText(Double.toString(mHighTemp), mXOffset * 3, mYOffset + (mYOffset * 3/4), mDateTextPaint);
-                    canvas.drawText(Double.toString(mLowTemp), mXOffset * 5, mYOffset + (mYOffset * 3/4), mDateTextPaint);
+                    if (iconId != -1) {
+                        Drawable drawable = getResources().getDrawable(iconId);
+                        Bitmap iconBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        canvas.drawBitmap(iconBitmap, mXOffset * 3/2, mYOffset + (mYOffset * 1/2), null);
+                    }
+
+                    float highTempXOffset;
+                    float lowTempXOffset;
+
+                    if (mIsRound) {
+                        highTempXOffset = mXOffset * 3 + (mXOffset * 1/2);
+                        lowTempXOffset = mXOffset * 5;
+                    } else { // In the case of a square watch face
+                        highTempXOffset = mXOffset * 4 + (mXOffset * 1/2);
+                        lowTempXOffset = mXOffset * 6 + (mXOffset * 1/2);
+                    }
+                    canvas.drawText(mHighTemp, highTempXOffset, mYOffset + (mYOffset * 3/4), mDateTextPaint);
+                    canvas.drawText(mLowTemp, lowTempXOffset, mYOffset + (mYOffset * 3/4), mDateTextPaint);
                 }
             }
         }
+
+        public int getIconResourceForWeatherCondition(int weatherId) {
+            // Based on weather code data found at:
+            // http://bugs.openweathermap.org/projects/api/wiki/Weather_Condition_Codes
+            if (weatherId >= 200 && weatherId <= 232) {
+                return R.mipmap.ic_storm;
+            } else if (weatherId >= 300 && weatherId <= 321) {
+                return R.mipmap.ic_light_rain;
+            } else if (weatherId >= 500 && weatherId <= 504) {
+                return R.mipmap.ic_rain;
+            } else if (weatherId == 511) {
+                return R.mipmap.ic_snow;
+            } else if (weatherId >= 520 && weatherId <= 531) {
+                return R.mipmap.ic_rain;
+            } else if (weatherId >= 600 && weatherId <= 622) {
+                return R.mipmap.ic_snow;
+            } else if (weatherId >= 701 && weatherId <= 761) {
+                return R.mipmap.ic_fog;
+            } else if (weatherId == 761 || weatherId == 781) {
+                return R.mipmap.ic_storm;
+            } else if (weatherId == 800) {
+                return R.mipmap.ic_clear;
+            } else if (weatherId == 801) {
+                return R.mipmap.ic_light_clouds;
+            } else if (weatherId >= 802 && weatherId <= 804) {
+                return R.mipmap.ic_cloudy;
+            }
+            return -1;
+        }
+
 
         /**
          * Starts the {@link #mUpdateTimeHandler} timer if it should be running and isn't currently
@@ -348,8 +396,9 @@ public class SunshineWatchFace extends CanvasWatchFaceService {
                     DataMap dataMap = DataMapItem.fromDataItem(dataEvent.getDataItem()).getDataMap();
                     String path = dataEvent.getDataItem().getUri().getPath();
                     if (path.equals("/weather")){
-                        mHighTemp = dataMap.getDouble("high");
-                        mLowTemp = dataMap.getDouble("low");
+                        mHighTemp = dataMap.getString("high");
+                        mLowTemp = dataMap.getString("low");
+                        mWeatherId = dataMap.getInt("id");
                         mHasTemperatureData = true;
                         Log.d(TAG, "Received data from handheld device");
                         // Refresh the screen
