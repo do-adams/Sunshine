@@ -1,5 +1,5 @@
 #Sunshine
-===================================
+Weather data for Android and Android Wear. 
 
 ![Sunshine Preview Img](Sunshine Watch Faces Preview.png?raw=true)
 
