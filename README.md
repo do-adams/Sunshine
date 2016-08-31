@@ -17,6 +17,8 @@ Before you begin with Sunshine you will first need a few things:
 - An [Open Weather Map API](http://openweathermap.org/api) key in your local or global gradle.properties file.
 - A [Google Places API](https://developers.google.com/places/android-api/signup) key in your local or global gradle.properties file along with a `google-services.json` configuration file in your `/app` dir.
 
+See the Gradle app-level build file for more information as to how to embed these keys in the properties file. 
+
 Make sure you set the `IS_WEAR_DEBUG_MODE` flag to `false` in the `SunshineSyncAdapter.class` (located in the `sync` package) file if you're not testing or debugging the Android Wear functionality of the application.
 
 If you're using an emulator for the Wear device, make sure to [forward](https://developer.android.com/training/wearables/apps/creating.html#SetupEmulator) the AVD's communication port to your handheld.
